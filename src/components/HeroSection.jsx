@@ -65,42 +65,28 @@ const HeroSection = () => {
       <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
         
         {/* Left side - Text content */}
-        <div className="space-y-8">
-          <div className="space-y-6">
-            <h1 className="text-6xl font-bold text-gray-900 leading-tight">
-              Make Decisions with <span className="text-blue-500">Clarity</span>
+        <div className="flex flex-col justify-center h-full">
+          <div className="relative">
+            {/* Decorative element behind text */}
+            <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full opacity-30 blur-2xl"></div>
+            
+            <h1 className="text-7xl font-bold leading-none relative z-10">
+              <span className="block text-gray-900 mb-2">Make</span>
+              <span className="block text-gray-900 mb-2">Decisions</span>
+              <span className="block">
+                with <span className="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 bg-clip-text text-transparent">Clarity</span>
+              </span>
             </h1>
             
-            <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-              Transform complex choices into clear, actionable insights. Navigate through life's toughest decisions with confidence.
+            {/* Subtle tagline */}
+            <p className="text-lg text-gray-500 mt-8 font-light tracking-wide">
+              Where every choice becomes crystal clear
             </p>
-          </div>
-
-          {/* Feature highlights */}
-          <div className="space-y-4 pt-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-              <span className="text-gray-700 font-medium">Visual decision frameworks</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
-              <span className="text-gray-700 font-medium">Smart pros & cons analysis</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
-              <span className="text-gray-700 font-medium">Collaborative decision making</span>
-            </div>
-          </div>
-
-          {/* Stats or social proof */}
-          <div className="pt-8 border-t border-gray-100">
-            <div className="flex items-center space-x-6 text-sm text-gray-500">
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span>10k+ decisions made</span>
-              </div>
-              <span>•</span>
-              <span>95% user satisfaction</span>
+            
+            {/* Minimal accent line */}
+            <div className="mt-12 flex items-center space-x-4">
+              <div className="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
             </div>
           </div>
         </div>
