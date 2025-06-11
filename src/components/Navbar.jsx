@@ -34,10 +34,11 @@ const Navbar = () => {
 
   return (
     <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-700 ease-out ${
-      scrolled 
-        ? 'backdrop-blur-md bg-white/90 border-b border-gray-200/60 shadow-lg py-3' 
-        : 'backdrop-blur-sm bg-white/70 border-b border-gray-100/40 py-4'
-    }`}>
+  scrolled 
+    ? 'backdrop-blur-md bg-transparent border-b border-gray-200/60 shadow-lg py-3' 
+    : 'backdrop-blur-sm bg-transparent border-b border-gray-100/40 py-4'
+}`}>
+
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
         <div className={`text-2xl font-bold tracking-wide transition-all duration-500 ${
