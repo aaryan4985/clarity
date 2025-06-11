@@ -24,6 +24,7 @@ function FeatureItem({ text, image }) {
   const itemRef = React.useRef(null);
   const marqueeRef = React.useRef(null);
   const marqueeInnerRef = React.useRef(null);
+  const timelineRef = React.useRef(null);
 
   const animationDefaults = { duration: 0.4, ease: 'power2.out' };
 
@@ -35,6 +36,12 @@ function FeatureItem({ text, image }) {
 
   const handleMouseEnter = (ev) => {
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+    
+    // Kill any existing animations to prevent conflicts
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+    
     const rect = itemRef.current.getBoundingClientRect();
     const edge = findClosestEdge(
       ev.clientX - rect.left,
@@ -48,7 +55,7 @@ function FeatureItem({ text, image }) {
     // Instantly hide title
     gsap.set(titleElement, { opacity: 0 });
     
-    gsap.timeline({ defaults: animationDefaults })
+    timelineRef.current = gsap.timeline({ defaults: animationDefaults })
       .set(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' })
       .set(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' })
       .to([marqueeRef.current, marqueeInnerRef.current], { y: '0%' });
@@ -56,6 +63,12 @@ function FeatureItem({ text, image }) {
 
   const handleMouseLeave = (ev) => {
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+    
+    // Kill any existing animations to prevent conflicts
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+    
     const rect = itemRef.current.getBoundingClientRect();
     const edge = findClosestEdge(
       ev.clientX - rect.left,
@@ -66,10 +79,12 @@ function FeatureItem({ text, image }) {
 
     const titleElement = itemRef.current.querySelector('.feature-title');
 
-    gsap.timeline({ defaults: animationDefaults })
+    // Instantly show title first
+    gsap.set(titleElement, { opacity: 1 });
+
+    timelineRef.current = gsap.timeline({ defaults: animationDefaults })
       .to(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' })
-      .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' })
-      .set(titleElement, { opacity: 1 }); // Instantly show title after marquee leaves
+      .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' });
   };
 
   const repeatedMarqueeContent = Array.from({ length: 4 }).map((_, idx) => (
