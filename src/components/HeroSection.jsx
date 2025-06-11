@@ -53,109 +53,162 @@ const CardSwap = ({ children, cardDistance = 60, verticalDistance = 70, delay = 
 
 const HeroSection = () => {
   return (
-    <section className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+    <section className="w-full h-screen bg-white flex items-center px-8 relative overflow-hidden">
       {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-100 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-50 to-purple-50 rounded-full opacity-30 blur-3xl"></div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-100 rounded-full opacity-30 blur-xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-100 rounded-full opacity-25 blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-pink-100 rounded-full opacity-20 blur-lg"></div>
       </div>
 
-      {/* Main content container */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center">
-        {/* Header section */}
-        <div className="text-center mb-16 space-y-6">
-          <div className="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full border border-gray-200/50 shadow-sm mb-4">
-            <span className="text-sm font-medium text-gray-600">✨ AI-Powered Decision Making</span>
+      {/* Main content container - Split layout */}
+      <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
+        
+        {/* Left side - Text content */}
+        <div className="space-y-8">
+          <div className="space-y-6">
+            <h1 className="text-6xl font-bold text-gray-900 leading-tight">
+              Make Decisions with <span className="text-blue-500">Clarity</span>
+            </h1>
+            
+            <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+              Transform complex choices into clear, actionable insights. Navigate through life's toughest decisions with confidence.
+            </p>
           </div>
-          
-          <h1 className="text-6xl md:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
-            Make Decisions with{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-              Clarity
-            </span>
-          </h1>
-          
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-light">
-            Transform complex choices into clear, visual insights with AI-powered analysis
-          </p>
+
+          {/* Feature highlights */}
+          <div className="space-y-4 pt-4">
+            <div className="flex items-center space-x-4">
+              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+              <span className="text-gray-700 font-medium">Visual decision frameworks</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+              <span className="text-gray-700 font-medium">Smart pros & cons analysis</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
+              <span className="text-gray-700 font-medium">Collaborative decision making</span>
+            </div>
+          </div>
+
+          {/* Stats or social proof */}
+          <div className="pt-8 border-t border-gray-100">
+            <div className="flex items-center space-x-6 text-sm text-gray-500">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span>10k+ decisions made</span>
+              </div>
+              <span>•</span>
+              <span>95% user satisfaction</span>
+            </div>
+          </div>
         </div>
 
-        {/* Cards section */}
-        <div className="relative w-full h-96 flex items-center justify-center">
+        {/* Right side - Cards with original animation */}
+        <div className="relative h-96 flex justify-center items-center">
           <CardSwap
-            cardDistance={80}
-            verticalDistance={20}
+            cardDistance={60}
+            verticalDistance={70}
             delay={4000}
             pauseOnHover={true}
           >
-            <Card className="group relative p-8 bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-2xl rounded-3xl w-[420px] h-[280px] hover:shadow-3xl transition-all duration-500 hover:bg-white/90">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white text-xl">🎯</span>
+            <Card className="p-8 bg-white shadow-xl text-gray-800 w-[400px] h-[300px] rounded-2xl border border-gray-50 hover:shadow-2xl transition-shadow duration-300">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <span className="text-blue-600 text-sm">🎯</span>
+                  </div>
+                  <h3 className="text-2xl font-semibold text-gray-900">Should I Study or Rest?</h3>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-700 transition-colors duration-300">
-                  Should I Study or Rest?
-                </h3>
-                <p className="text-gray-600 text-lg leading-relaxed font-light">
-                  Analyze long-term vs short-term gains with intelligent insights that help you make the right choice.
+                <p className="text-gray-600 leading-relaxed">
+                  Analyze long-term vs short-term gains easily with our intelligent framework.
                 </p>
+                <div className="pt-4">
+                  <div className="flex justify-between items-center text-sm mb-2">
+                    <span className="text-gray-500">Decision confidence</span>
+                    <span className="text-blue-600 font-medium">85%</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className="bg-blue-500 h-2 rounded-full transition-all duration-500" style={{width: '85%'}}></div>
+                  </div>
+                </div>
               </div>
             </Card>
 
-            <Card className="group relative p-8 bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-2xl rounded-3xl w-[420px] h-[280px] hover:shadow-3xl transition-all duration-500 hover:bg-white/90">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/50 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white text-xl">⚖️</span>
+            <Card className="p-8 bg-white shadow-xl text-gray-800 w-[400px] h-[300px] rounded-2xl border border-gray-50 hover:shadow-2xl transition-shadow duration-300">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <span className="text-purple-600 text-sm">⚖️</span>
+                  </div>
+                  <h3 className="text-2xl font-semibold text-gray-900">Pros & Cons Made Visual</h3>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-700 transition-colors duration-300">
-                  Pros & Cons Made Visual
-                </h3>
-                <p className="text-gray-600 text-lg leading-relaxed font-light">
-                  Let AI help you see both sides clearly with beautiful, interactive visualizations.
+                <p className="text-gray-600 leading-relaxed">
+                  Let AI help you see both sides clearly with interactive visualizations.
                 </p>
+                <div className="pt-4 grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div className="text-green-600 font-semibold mb-2">Pros (4)</div>
+                    <div className="space-y-1 text-gray-500">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                        <span>Better focus</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                        <span>Long-term gains</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-red-600 font-semibold mb-2">Cons (2)</div>
+                    <div className="space-y-1 text-gray-500">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-red-400 rounded-full"></div>
+                        <span>Mental fatigue</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-red-400 rounded-full"></div>
+                        <span>Time pressure</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Card>
 
-            <Card className="group relative p-8 bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-2xl rounded-3xl w-[420px] h-[280px] hover:shadow-3xl transition-all duration-500 hover:bg-white/90">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-blue-50/50 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white text-xl">🤝</span>
+            <Card className="p-8 bg-white shadow-xl text-gray-800 w-[400px] h-[300px] rounded-2xl border border-gray-50 hover:shadow-2xl transition-shadow duration-300">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    <span className="text-green-600 text-sm">🤝</span>
+                  </div>
+                  <h3 className="text-2xl font-semibold text-gray-900">Share Your Thoughts</h3>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-700 transition-colors duration-300">
-                  Share Your Thoughts
-                </h3>
-                <p className="text-gray-600 text-lg leading-relaxed font-light">
-                  Export and discuss decisions with friends, mentors, or team members seamlessly.
+                <p className="text-gray-600 leading-relaxed">
+                  Export and discuss decisions with friends or mentors seamlessly.
                 </p>
+                <div className="pt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm text-gray-500">Team collaboration</span>
+                    <span className="text-sm text-green-600 font-medium">Active</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="flex -space-x-2">
+                      <div className="w-7 h-7 bg-blue-500 rounded-full border-2 border-white"></div>
+                      <div className="w-7 h-7 bg-green-500 rounded-full border-2 border-white"></div>
+                      <div className="w-7 h-7 bg-purple-500 rounded-full border-2 border-white"></div>
+                      <div className="w-7 h-7 bg-gray-300 rounded-full border-2 border-white flex items-center justify-center">
+                        <span className="text-xs text-gray-600">+2</span>
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-500">5 collaborators</span>
+                  </div>
+                </div>
               </div>
             </Card>
           </CardSwap>
-        </div>
-
-        {/* Bottom CTA section */}
-        <div className="mt-16 flex flex-col sm:flex-row items-center gap-4">
-          <button className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <span className="relative z-10">Start Making Better Decisions</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
-          
-          <button className="px-8 py-4 text-gray-700 font-semibold hover:text-gray-900 transition-colors duration-300 border-2 border-gray-200 rounded-2xl hover:border-gray-300 hover:bg-gray-50">
-            Learn More
-          </button>
-        </div>
-
-        {/* Progress indicators */}
-        <div className="mt-12 flex space-x-2">
-          {[0, 1, 2].map((index) => (
-            <div
-              key={index}
-              className="w-2 h-2 rounded-full bg-gray-300 transition-all duration-300"
-            ></div>
-          ))}
         </div>
       </div>
     </section>
