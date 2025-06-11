@@ -2,6 +2,7 @@
 
 import HeroSection from "../components/HeroSection";
 import ClarityFeatures from "../components/ClarityFeatures";
+import Navbar from "../components/Navbar";
 
 const clarityFeatures = [
   {
@@ -25,6 +26,7 @@ const clarityFeatures = [
 const LandingPage = () => {
   return (
     <div className="w-full overflow-x-hidden bg-[#fdfdfd] text-[#060010]">
+        <Navbar />
       <section id="hero">
         <HeroSection />
       </section>
