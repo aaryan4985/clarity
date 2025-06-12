@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Brain, Sun, Moon, Lightbulb, TrendingUp, TrendingDown, History, BarChart3, Zap, Target, Clock, Users, DollarSign, AlertTriangle, LogOut, User } from 'lucide-react';
+import { auth, db } from '../firebase';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { collection, addDoc, query, where, orderBy, getDocs, serverTimestamp } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [prompt, setPrompt] = useState('');
@@ -10,33 +14,90 @@ const Dashboard = () => {
   const [analysisMetrics, setAnalysisMetrics] = useState(null);
   const [decisionCategory, setDecisionCategory] = useState('general');
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  
+  const navigate = useNavigate();
 
-  // Mock user for demonstration
-  const user = { email: 'demo@example.com', uid: 'demo-user' };
-
-  // Load mock history data
+  // Monitor authentication state
   useEffect(() => {
-    setDecisionHistory([
-      {
-        id: '1',
-        prompt: 'Should I switch to a remote job?',
-        category: 'career',
-        timestamp: new Date(Date.now() - 86400000).toISOString(),
-        result: { verdict: 'Consider the long-term career growth potential', confidence: 78 }
-      },
-      {
-        id: '2',
-        prompt: 'Should I invest in cryptocurrency?',
-        category: 'financial',
-        timestamp: new Date(Date.now() - 172800000).toISOString(),
-        result: { verdict: 'Diversify your portfolio with caution', confidence: 65 }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        loadUserHistory(currentUser.uid);
+      } else {
+        navigate('/signin');
       }
-    ]);
-  }, []);
+      setAuthLoading(false);
+    });
 
-  const handleLogout = () => {
-    // Redirect to home page
-    window.location.href = '/';
+    return () => unsubscribe();
+  }, [navigate]);
+
+  // Load user's decision history from Firestore
+  const loadUserHistory = async (userId) => {
+    setLoadingHistory(true);
+    try {
+      const decisionsRef = collection(db, 'decisions');
+      const q = query(
+        decisionsRef, 
+        where('userId', '==', userId), 
+        orderBy('timestamp', 'desc')
+      );
+      const querySnapshot = await getDocs(q);
+      
+      const history = [];
+      querySnapshot.forEach((doc) => {
+        history.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+      
+      setDecisionHistory(history);
+    } catch (error) {
+      console.error('Error loading history:', error);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
+  // Save decision to Firestore
+  const saveDecisionToHistory = async (decisionData) => {
+    if (!user) return;
+
+    try {
+      const docRef = await addDoc(collection(db, 'decisions'), {
+        userId: user.uid,
+        userEmail: user.email,
+        prompt: decisionData.prompt,
+        result: decisionData.result,
+        category: decisionData.category,
+        metrics: decisionData.metrics,
+        timestamp: serverTimestamp(),
+        createdAt: new Date().toISOString()
+      });
+
+      // Add to local state with the new ID
+      const newDecision = {
+        id: docRef.id,
+        ...decisionData,
+        timestamp: new Date().toISOString()
+      };
+      
+      setDecisionHistory(prev => [newDecision, ...prev]);
+    } catch (error) {
+      console.error('Error saving decision:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const categories = [
@@ -48,7 +109,7 @@ const Dashboard = () => {
   ];
 
   const analyzeDecision = async () => {
-    if (!prompt.trim()) return;
+    if (!prompt.trim() || !user) return;
     
     setLoading(true);
     
@@ -134,17 +195,13 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
 
         setAnalysisMetrics(metrics);
 
-        // Add to history
-        const newDecision = {
-          id: Date.now().toString(),
+        // Save to Firestore
+        await saveDecisionToHistory({
           prompt: prompt,
           result: parsedResult,
           category: decisionCategory,
-          metrics: metrics,
-          timestamp: new Date().toISOString()
-        };
-        
-        setDecisionHistory(prev => [newDecision, ...prev]);
+          metrics: metrics
+        });
       } else {
         throw new Error('No valid JSON found in response');
       }
@@ -190,17 +247,13 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
 
       setAnalysisMetrics(metrics);
 
-      // Add to history
-      const newDecision = {
-        id: Date.now().toString(),
+      // Save to Firestore
+      await saveDecisionToHistory({
         prompt: prompt,
         result: mockResult,
         category: decisionCategory,
-        metrics: metrics,
-        timestamp: new Date().toISOString()
-      };
-      
-      setDecisionHistory(prev => [newDecision, ...prev]);
+        metrics: metrics
+      });
     }
     
     setLoading(false);
@@ -258,6 +311,23 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
     );
   };
 
+  // Show loading spinner while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-gray-600">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if no user (will redirect)
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Background Elements */}
@@ -276,7 +346,7 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Clarity Pro
+                Clarity
               </h1>
               <p className="text-sm text-gray-500">AI Decision Intelligence</p>
             </div>
@@ -317,22 +387,33 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
               </div>
             ) : (
               <div className="space-y-3">
-                {decisionHistory.map((decision) => (
-                  <div key={decision.id} className="p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
-                    <div className="text-sm font-medium text-gray-900 mb-1 truncate">
-                      {decision.prompt}
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span className="capitalize">{decision.category}</span>
-                      <span>{new Date(decision.timestamp).toLocaleDateString()}</span>
-                    </div>
-                    {decision.result && (
-                      <div className="text-xs text-blue-600 mt-1">
-                        Confidence: {decision.result.confidence}%
+                {decisionHistory.length === 0 ? (
+                  <p className="text-gray-500 text-sm text-center py-8">
+                    No decisions analyzed yet. Start by asking a question!
+                  </p>
+                ) : (
+                  decisionHistory.map((decision) => (
+                    <div key={decision.id} className="p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                      <div className="text-sm font-medium text-gray-900 mb-1 truncate">
+                        {decision.prompt}
                       </div>
-                    )}
-                  </div>
-                ))}
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <span className="capitalize">{decision.category}</span>
+                        <span>
+                          {decision.createdAt ? 
+                            new Date(decision.createdAt).toLocaleDateString() :
+                            new Date(decision.timestamp?.seconds * 1000 || Date.now()).toLocaleDateString()
+                          }
+                        </span>
+                      </div>
+                      {decision.result && (
+                        <div className="text-xs text-blue-600 mt-1">
+                          Confidence: {decision.result.confidence}%
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             )}
           </div>
