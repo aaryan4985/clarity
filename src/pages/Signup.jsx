@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -6,6 +9,8 @@ const Signup = () => {
   const [error, setError] = useState("");
   const [focusedField, setFocusedField] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -13,18 +18,21 @@ const Signup = () => {
     setError("");
     
     try {
-      // Simulate Firebase auth - replace with actual Firebase call
-      // await createUserWithEmailAndPassword(auth, email, password);
-      // navigate("/dashboard");
-      
-      // Simulated delay for demo
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Create user with Firebase auth
+      await createUserWithEmailAndPassword(auth, email, password);
       console.log("Account created successfully!");
+      // Navigate to dashboard after successful signup
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Failed to create account. Please try again.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSignInClick = () => {
+    // Navigate to sign in page
+    navigate("/signin");
   };
 
   const handleFocus = (fieldName) => {
@@ -38,14 +46,14 @@ const Signup = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center px-6">
       {/* Floating Elements */}
-      <div className="absolute w-96 h-96 bg-gradient-to-br from-purple-50 to-pink-50 rounded-full blur-3xl opacity-30 top-20 left-20 animate-pulse"></div>
-      <div className="absolute w-64 h-64 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-20 bottom-32 right-16"></div>
+      <div className="absolute w-96 h-96 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 top-20 right-20 animate-pulse"></div>
+      <div className="absolute w-64 h-64 bg-gradient-to-br from-purple-50 to-pink-50 rounded-full blur-3xl opacity-20 bottom-32 left-16"></div>
 
       <div className="w-full max-w-sm">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-2xl font-light text-gray-900 mb-3 tracking-wide">
-            Join Clarity
+            Create account
           </h1>
           <div className="w-12 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mx-auto"></div>
         </div>
@@ -59,7 +67,7 @@ const Signup = () => {
             </div>
           )}
 
-          <div className="space-y-8">
+          <form onSubmit={handleSignup} className="space-y-8">
             {/* Email Field */}
             <div className="relative">
               <input
@@ -84,7 +92,7 @@ const Signup = () => {
               >
                 Email address
               </label>
-              <div className={`h-px bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500 ${
+              <div className={`h-px bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ${
                 focusedField === "email" ? "w-full" : "w-0"
               }`}></div>
             </div>
@@ -102,6 +110,7 @@ const Signup = () => {
                 placeholder="Password"
                 id="password"
                 required
+                minLength="6"
               />
               <label 
                 htmlFor="password"
@@ -113,15 +122,14 @@ const Signup = () => {
               >
                 Password
               </label>
-              <div className={`h-px bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500 ${
+              <div className={`h-px bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ${
                 focusedField === "password" ? "w-full" : "w-0"
               }`}></div>
             </div>
 
             {/* Submit Button */}
             <button
-              type="button"
-              onClick={handleSignup}
+              type="submit"
               disabled={isLoading}
               className="group w-full py-4 mt-8 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-light rounded-2xl transition-all duration-500 hover:shadow-xl hover:shadow-gray-900/25 hover:-translate-y-0.5 active:translate-y-0 relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
@@ -133,22 +141,24 @@ const Signup = () => {
               ) : (
                 <>
                   <span className="relative z-10">Create Account</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                   <span className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
                     Create Account
                   </span>
                 </>
               )}
             </button>
-          </div>
+          </form>
 
           {/* Footer */}
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500 font-light">
               Already have an account?{" "}
-              <button className="text-gray-900 hover:text-purple-600 transition-colors duration-300 font-normal relative group bg-transparent border-none cursor-pointer">
+              <button 
+                onClick={handleSignInClick}
+                className="text-gray-900 hover:text-blue-600 transition-colors duration-300 font-normal bg-transparent border-none cursor-pointer"
+              >
                 Sign in
-                <span className="absolute bottom-0 left-0 w-0 h-px bg-gradient-to-r from-purple-500 to-pink-500 group-hover:w-full transition-all duration-300"></span>
               </button>
             </p>
           </div>
@@ -157,9 +167,9 @@ const Signup = () => {
         {/* Bottom Accent */}
         <div className="flex justify-center mt-8">
           <div className="flex space-x-1">
-            <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"></div>
-            <div className="w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-            <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+            <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+            <div className="w-2 h-2 bg-gradient-to-r from-pink-400 to-blue-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
           </div>
         </div>
       </div>

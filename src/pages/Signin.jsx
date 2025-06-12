@@ -1,9 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase"; 
 
 const Signin = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [focusedField, setFocusedField] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,6 +21,47 @@ const Signin = () => {
 
   const handleBlur = () => {
     setFocusedField("");
+  };
+
+  const handleSignin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    
+    try {
+      // Sign in user with Firebase auth
+      await signInWithEmailAndPassword(auth, form.email, form.password);
+      console.log("Signed in successfully!");
+      // Navigate to dashboard after successful signin
+      navigate("/dashboard");
+    } catch (err) {
+      // Handle different Firebase auth errors
+      let errorMessage = "Failed to sign in. Please try again.";
+      
+      switch (err.code) {
+        case 'auth/user-not-found':
+          errorMessage = "No account found with this email address.";
+          break;
+        case 'auth/wrong-password':
+          errorMessage = "Incorrect password. Please try again.";
+          break;
+        case 'auth/invalid-email':
+          errorMessage = "Please enter a valid email address.";
+          break;
+        case 'auth/user-disabled':
+          errorMessage = "This account has been disabled.";
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = "Too many failed attempts. Please try again later.";
+          break;
+        default:
+          errorMessage = err.message || errorMessage;
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -34,7 +81,14 @@ const Signin = () => {
 
         {/* Form Container */}
         <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-2xl shadow-gray-900/5 border border-white/20">
-          <form className="space-y-8">
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50/50 border border-red-100 rounded-2xl">
+              <p className="text-red-600 text-sm font-light">{error}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSignin} className="space-y-8">
             {/* Email Field */}
             <div className="relative">
               <input
@@ -47,6 +101,7 @@ const Signin = () => {
                 className="w-full px-0 py-4 text-gray-900 bg-transparent border-0 border-b border-gray-200 focus:border-gray-400 focus:outline-none transition-all duration-500 placeholder-transparent peer"
                 placeholder="Email address"
                 id="email"
+                required
               />
               <label 
                 htmlFor="email"
@@ -75,6 +130,7 @@ const Signin = () => {
                 className="w-full px-0 py-4 text-gray-900 bg-transparent border-0 border-b border-gray-200 focus:border-gray-400 focus:outline-none transition-all duration-500 placeholder-transparent peer"
                 placeholder="Password"
                 id="password"
+                required
               />
               <label 
                 htmlFor="password"
@@ -94,13 +150,23 @@ const Signin = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="group w-full py-4 mt-8 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-light rounded-2xl transition-all duration-500 hover:shadow-xl hover:shadow-gray-900/25 hover:-translate-y-0.5 active:translate-y-0 relative overflow-hidden"
+              disabled={isLoading}
+              className="group w-full py-4 mt-8 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-light rounded-2xl transition-all duration-500 hover:shadow-xl hover:shadow-gray-900/25 hover:-translate-y-0.5 active:translate-y-0 relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
-              <span className="relative z-10">Continue</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-              <span className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
-                Continue
-              </span>
+              {isLoading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                <>
+                  <span className="relative z-10">Continue</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                  <span className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
+                    Continue
+                  </span>
+                </>
+              )}
             </button>
           </form>
 
