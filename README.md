@@ -15,10 +15,10 @@ Clarity helps you make thoughtful decisions by letting you list pros and cons, a
 ## 🔧 Tech Stack
 
 - **Frontend**: React + Tailwind CSS
-- **Backend**: Firebase Cloud Functions (Node.js)
-- **AI**: Gemini API (via Firebase)
+- **Backend**: Firebase Cloud Functions
+- **AI**: Gemini API
 - **Database**: Firestore
-- **Auth**: Firebase Auth (optional)
+- **Auth**: Firebase Auth
 - **Hosting**: Vercel
 
 ## 📊 Features
