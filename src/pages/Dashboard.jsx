@@ -320,9 +320,17 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
     setTimeout(() => {
       const resultsSection = document.querySelector('[data-results-section]');
       if (resultsSection) {
-        resultsSection.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
+        // Get the position of the results section
+        const rect = resultsSection.getBoundingClientRect();
+        const absoluteTop = rect.top + window.pageYOffset;
+        
+        // Scroll with offset to account for navbar (adjust navbar height as needed)
+        const navbarHeight = 100; // Adjust this value based on your navbar height
+        const targetPosition = absoluteTop - navbarHeight;
+        
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
         });
       }
     }, 100);
