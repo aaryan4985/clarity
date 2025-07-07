@@ -96,7 +96,7 @@ const HeroSection = () => {
           <CardSwap
             cardDistance={60}
             verticalDistance={70}
-            delay={4000}
+            delay={2000}
             pauseOnHover={true}
           >
             <Card className="p-8 bg-white shadow-xl text-gray-800 w-[400px] h-[300px] rounded-2xl border border-gray-50 hover:shadow-2xl transition-shadow duration-300">
