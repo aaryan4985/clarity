@@ -257,6 +257,9 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
     }
     
     setLoading(false);
+    
+    // Auto-scroll to results section after analysis is complete
+    scrollToResults();
   };
 
   const handleKeyPress = (e) => {
@@ -309,6 +312,20 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
         {level} risk
       </div>
     );
+  };
+
+  // Function to scroll to results section
+  const scrollToResults = () => {
+    // Wait a bit for the DOM to update with new results
+    setTimeout(() => {
+      const resultsSection = document.querySelector('[data-results-section]');
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 100);
   };
 
   // Show loading spinner while checking authentication
@@ -501,7 +518,7 @@ Provide 3-5 pros and 3-5 cons, each with a weight from 1-5 (5 being most importa
 
           {/* Results Section */}
           {result && (
-            <div className="space-y-8">
+            <div className="space-y-8" data-results-section>
               {/* Analysis Overview */}
               {analysisMetrics && (
                 <div className="bg-white/80 backdrop-blur-sm border border-gray-100 rounded-2xl p-8 shadow-xl">
